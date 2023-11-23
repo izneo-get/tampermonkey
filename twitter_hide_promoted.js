@@ -1,8 +1,10 @@
 // ==UserScript==
-// @name         Twitter hide promoted
+// @name         Twitter: hide promoted tweets
+// @name:fr      Twitter : masque les tweets sponsorisés
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  Hide "promoted" posts
+// @description  Hide promoted tweets
+// @description:fr  Masque les tweets sponsorisés
 // @author       Darth Obvious
 // @match       *://twitter.com/*
 // @match       *://*.twitter.com/*
