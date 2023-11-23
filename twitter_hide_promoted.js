@@ -2,7 +2,7 @@
 // @name         Twitter: hide promoted tweets
 // @name:fr      Twitter : masque les tweets sponsorisés
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.2.1
 // @description  Hide promoted tweets
 // @description:fr  Masque les tweets sponsorisés
 // @author       Darth Obvious
