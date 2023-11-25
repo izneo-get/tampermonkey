@@ -2,7 +2,7 @@
 // @name         Twitter: hide promoted tweets
 // @name:fr      Twitter : masque les tweets sponsorisés
 // @namespace    http://tampermonkey.net/
-// @version      0.2.1
+// @version      0.3.0
 // @description  Hide promoted tweets
 // @description:fr  Masque les tweets sponsorisés
 // @author       Darth Obvious
@@ -14,28 +14,29 @@
 (function() {
     "use strict";
     let count_hidden = 0;
+    const promoted_texts = ["Ad", "Promoted", "Gesponsert", "Promocionado", "Sponsorisé", "Sponsorizzato", "Promowane", "Promovido", "Реклама", "Uitgelicht", "Sponsorlu", "Promotert", "Promoveret", "Sponsrad", "Mainostettu", "Sponzorováno", "Promovat", "Ajánlott", "Προωθημένο", "Dipromosikan", "Được quảng bá", "推廣", "推广", "推薦", "推荐", "プロモーション", "프로모션", "ประชาสัมพันธ์", "प्रचारित", "বিজ্ঞাপিত", "تشہیر شدہ", "مُروَّج", "تبلیغی", "מקודם"];
     function hide_promoted(){
-        // Sélection de tous les éléments <article> non traités
+        // Select all <article> not processed
         const unprocessedArticles = document.querySelectorAll('article:not([data-processed])');
 
-        // Parcours de chaque article
+        // Loop on all articles
         unprocessedArticles.forEach(article => {
             article.setAttribute('data-processed', 'true');
-            // Recherche de tous les div descendants de l'article
+            // Search all divs
             const divs = article.querySelectorAll('div');
 
-            // Vérification si au moins un div contient un span avec uniquement le texte "Ad"
+            // Test if a div contains only the "promoted" text
             let containsAd = false;
             divs.forEach(div => {
                 const spans = div.querySelectorAll('span');
                 spans.forEach(span => {
-                    if (span.textContent.trim() === 'Ad') {
+                    if (promoted_texts.includes(span.textContent.trim())) {
                         containsAd = true;
                     }
                 });
             });
 
-            // Si l'article contient un div avec un span contenant uniquement "Ad" on le masque
+            // If it looks like a promoted tweet, it's hidden
             if (containsAd) {
                 article.style.display = 'none';
                 count_hidden += 1;
@@ -45,13 +46,13 @@
     }
 
 
-    // Création d'une instance de MutationObserver pour observer les changements dans <body>
+    // MutationObserver to observe changes in <body>
     const observer = new MutationObserver(function(mutations) {
         mutations.forEach(function(mutation) {
             mutation.addedNodes.forEach(function(node) {
-                // Vérifier si le noeud ajouté est un <div>
+                // Is this node a <div>?
                 if (node instanceof HTMLDivElement) {
-                    // Vérifier les enfants du <div> ajouté pour trouver les balises <article>
+                    // Check all children of the <div> to find <article> tags
                     const articlesInDiv = node.querySelectorAll('article');
                     if (articlesInDiv.length > 0) {
                         hide_promoted();
@@ -61,7 +62,7 @@
         });
     });
 
-    // Configuration de l'observer pour surveiller les changements dans <body>
+    // Observer for changes in <body>
     const observerConfig = { childList: true, subtree: true };
     observer.observe(document.body, observerConfig);
 })();
