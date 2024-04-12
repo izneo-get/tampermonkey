@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TikTok Counter Skip Timer
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Modify TikTok Counter page content
 // @author       Darth Obvious
 // @match        https://tiktokcounter.net/travel/*
@@ -59,7 +59,11 @@
         }
         var continueButton = document.getElementById('cbt');
         if (continueButton && continueButton.innerText == 'Continue') {
-            skipButton.remove();
+            if (skipButton) {
+                skipButton.remove();
+            }
+            isHoverDone = true;
+            continueButton.click();
         }
     }
 
