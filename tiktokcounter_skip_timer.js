@@ -1,11 +1,12 @@
 // ==UserScript==
-// @name         TikTok Counter Skip Timer (PSA Rips ads)
+// @name         PSA Rips Skip Ads Timer
 // @namespace    http://tampermonkey.net/
 // @version      0.5
 // @description  Modify TikTok Counter page content
 // @author       Darth Obvious
 // @match        https://tiktokcounter.net/travel/*
 // @match        https://lifgam.online/*
+// @match        https://tpayr.xyz/*
 // @grant        none
 // ==/UserScript==
 
@@ -60,13 +61,16 @@
 
         var continueButton = document.getElementById('cbt');
         if (continueButton) {
+
             isHoverDone = true;
             isTimerCompleted = true;
             isAdClickDone = true;
+            isClownClickDone = true;
             isFirstClickDone = true;
             continueButton.removeAttribute('disabled');
             continueButton.setAttribute('type', 'submit');
             continueButton.click();
+            //document.querySelector("#userForm").submit();
         }
     }
 
