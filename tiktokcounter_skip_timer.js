@@ -1,10 +1,11 @@
 // ==UserScript==
-// @name         TikTok Counter Skip Timer
+// @name         TikTok Counter Skip Timer (PSA Rips ads)
 // @namespace    http://tampermonkey.net/
-// @version      0.4
+// @version      0.5
 // @description  Modify TikTok Counter page content
 // @author       Darth Obvious
 // @match        https://tiktokcounter.net/travel/*
+// @match        https://lifgam.online/*
 // @grant        none
 // ==/UserScript==
 
@@ -19,7 +20,7 @@
         var scripts = document.getElementsByTagName('script');
         for (var i = 0; i < scripts.length; i++) {
             var script = scripts[i];
-            if (script.innerHTML.includes('window.wpSiteUrl = "https://tiktokcounter.net/travel";')) {
+            if (script.innerHTML.includes('window.wpSiteUrl = "')) {
                 var regex = /var (.+) = (\d+);/;
                 var match = script.innerHTML.match(regex);
                 if (match !== null) {
