@@ -7,6 +7,7 @@
 // @match        https://tiktokcounter.net/travel/*
 // @match        https://lifgam.online/*
 // @match        https://tpayr.xyz/*
+// @match        https://tryzt.xyz/*
 // @grant        none
 // ==/UserScript==
 
