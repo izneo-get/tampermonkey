@@ -1,18 +1,19 @@
 // ==UserScript==
 // @name         PSA Rips Skip Ads Timer
 // @namespace    http://tampermonkey.net/
-// @version      0.5
+// @version      0.6
 // @description  Modify TikTok Counter page content
 // @author       Darth Obvious
-// @match        https://tiktokcounter.net/travel/*
-// @match        https://lifgam.online/*
-// @match        https://tpayr.xyz/*
-// @match        https://tryzt.xyz/*
+// @match        https://*/*
 // @grant        none
 // ==/UserScript==
 
 (function() {
     'use strict';
+    var cbtElement = document.getElementById('cbt');
+    if (!cbtElement || cbtElement.getAttribute('onclick') !== "formulaSend(event)") {
+        return;
+    }
 
     function resetTimer(varName) {
        window[varName] = 0;
@@ -27,6 +28,7 @@
                 var match = script.innerHTML.match(regex);
                 if (match !== null) {
                     var variableName = match[1];
+                    console.log(variableName);
                     return variableName;
                 }
             }
@@ -62,18 +64,28 @@
 
         var continueButton = document.getElementById('cbt');
         if (continueButton) {
-
-            isHoverDone = true;
-            isTimerCompleted = true;
-            isAdClickDone = true;
-            isClownClickDone = true;
-            isFirstClickDone = true;
+            if (typeof isHoverDone !== "undefined") {
+                isHoverDone = true;
+            }
+            if (typeof isTimerCompleted !== "undefined") {
+                isTimerCompleted = true;
+            }
+            if (typeof isAdClickDone !== "undefined") {
+                isAdClickDone = true;
+            }
+            if (typeof isClownClickDone !== "undefined") {
+                isClownClickDone = true;
+            }
+            if (typeof isFirstClickDone !== "undefined") {
+                isFirstClickDone = true;
+            }
             continueButton.removeAttribute('disabled');
             continueButton.setAttribute('type', 'submit');
             continueButton.click();
             //document.querySelector("#userForm").submit();
         }
     }
+
 
     addSkipButton();
     setInterval(autoClickSkipButton, 1000); // 1000 ms = 1 seconde
