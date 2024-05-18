@@ -11,7 +11,7 @@
 (function() {
     'use strict';
     var cbtElement = document.getElementById('cbt');
-    if (!cbtElement || cbtElement.getAttribute('onclick') !== "formulaSend(event)") {
+    if (!cbtElement || !cbtElement.getAttribute('onclick').endsWith("formulaSend(event)")) {
         return;
     }
 
