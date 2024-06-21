@@ -132,7 +132,7 @@
     }
 
     function sanitizeFilename(filename) {
-        return filename.replace(/[^a-z0-9éèêàçôöïñ ]/gi, '_');
+        return filename.replace(/[^a-z0-9éèêàâçôöïñ ]/gi, '_');
     }
 
     var rid = getXAmzRid();
