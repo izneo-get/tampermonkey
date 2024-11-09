@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         PSA Rips Skip Ads Timer
 // @namespace    http://tampermonkey.net/
-// @version      0.7
+// @version      0.8
 // @description  Modify TikTok Counter page content
 // @author       Darth Obvious
 // @match        https://*/*
@@ -12,8 +12,19 @@
     'use strict';
     var cbtElement = document.getElementById('cbt');
     if (!cbtElement || cbtElement.getAttribute('onclick') !== "formulaSend(event)") {
+        checkForRetry();
         return;
     }
+
+    function checkForRetry() {
+        const elements = document.querySelectorAll('div.admania-entrycontent');
+        elements.forEach(element => {
+            if (element.textContent.includes("please try again")) {
+                location.reload();
+            }
+        });
+    }
+
 
     function resetTimer(varName) {
        window[varName] = 0;
