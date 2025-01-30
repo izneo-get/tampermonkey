@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Gofile.io never overloaded
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  Les fichiers Gofile ne sont jamais en "overloaded".
+// @version      0.2
+// @description  Les fichiers Gofile ne sont jamais en "overloaded" ni en "cold storage".
 // @author      Darth Obvious
 // @match        https://gofile.io/*
 // @grant        none
@@ -21,6 +21,21 @@
                 return response.text().then(function(text) {
                     // Modifie la réponse
                     var modifiedContent = removeOverloaded(text);
+                    // Créez une nouvelle réponse avec le texte modifié.
+                    var modifiedResponse = new Response(JSON.stringify(modifiedContent, null, 2), {
+                        status: response.status,
+                        statusText: response.statusText,
+                        headers: response.headers
+                    });
+                    return modifiedResponse;
+                });
+            }
+            if (response.headers.get('content-type') &&
+                response.headers.get('content-type').includes('json') &&
+                response.url.match(/https:\/\/api.gofile.io\/contents/)) {
+                return response.text().then(function(text) {
+                    // Modifie la réponse
+                    var modifiedContent = removeIsFrozen(text);
                     // Créez une nouvelle réponse avec le texte modifié.
                     var modifiedResponse = new Response(JSON.stringify(modifiedContent, null, 2), {
                         status: response.status,
@@ -50,4 +65,20 @@
         }
         return json;
     }
+    function removeIsFrozen(json) {
+        if (typeof json === 'string') {
+            json = JSON.parse(json);
+        }
+        if (json.data && json.data.children) {
+            Object.values(json.data.children).forEach(child => {
+                if (child.hasOwnProperty("isFrozen")) {
+                    delete child.isFrozen;
+                    delete child.isFrozenTimestamp;
+                    child.name += " (merci Darth Obvious !)";
+                }
+            });
+        }
+        return json;
+    }
+
 })();
