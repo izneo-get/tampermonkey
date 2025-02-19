@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Gofile.io never overloaded
 // @namespace    http://tampermonkey.net/
-// @version      0.2
+// @version      0.3
 // @description  Les fichiers Gofile ne sont jamais en "overloaded" ni en "cold storage".
 // @author      Darth Obvious
 // @match        https://gofile.io/*
@@ -34,6 +34,9 @@
                 response.headers.get('content-type').includes('json') &&
                 response.url.match(/https:\/\/api.gofile.io\/contents/)) {
                 return response.text().then(function(text) {
+                    // Get links
+                    const links = extractLink(text);
+                    setTimeout(addOriginalLinks, 1000, links);
                     // Modifie la réponse
                     var modifiedContent = removeIsFrozen(text);
                     // Créez une nouvelle réponse avec le texte modifié.
@@ -65,6 +68,7 @@
         }
         return json;
     }
+
     function removeIsFrozen(json) {
         if (typeof json === 'string') {
             json = JSON.parse(json);
@@ -79,6 +83,45 @@
             });
         }
         return json;
+    }
+
+    function extractLink(json) {
+        const pairs = [];
+        if (typeof json === 'string') {
+            json = JSON.parse(json);
+        }
+        if (json.data && json.data.children) {
+            const children = json.data.children;
+            for (const childKey in children) {
+                if (children.hasOwnProperty(childKey)) {
+                    const child = children[childKey];
+                    pairs.push({
+                        id: child.id,
+                        link: child.link
+                    });
+                }
+            }
+        }
+        return pairs;
+    }
+
+    function getLinkById(id, links) {
+        const pair = links.find(pair => pair.id === id);
+        return pair ? pair.link : undefined;
+    }
+
+    function addOriginalLinks(links) {
+        const targetDivs = document.querySelectorAll('div[data-item-id]');
+        // Itérer sur chaque div trouvé
+        targetDivs.forEach(div => {
+            const itemId = div.getAttribute('data-item-id');
+            const link = getLinkById(itemId, links);
+            if (link) {
+                const newDiv = document.createElement('div');
+                newDiv.innerHTML = '<a href="' + link + '" rel="noopener noreferrer" target="_blank">' + link + '</a>';
+                div.appendChild(newDiv);
+            }
+        });
     }
 
 })();
