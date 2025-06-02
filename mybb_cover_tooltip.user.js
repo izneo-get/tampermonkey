@@ -25,8 +25,7 @@
         HIDE_TOOLTIP_DELAY: 300, // Delay before hiding tooltip (in ms)
         IMAGE_CLASS_BLACKLIST: ['smilie', 'emoji', 'avatar'], // Image classes to ignore
         URL_REGEX_BLACKLIST: [
-            'emule\\.png$',
-            'emule64\\.png$',
+            'emule[\d]*\.png$',
             '/icones/',
         ] // Regex patterns for image URLs to ignore
     };
