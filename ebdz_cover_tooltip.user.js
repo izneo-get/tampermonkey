@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Cover Tooltip
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.3
 // @description  Affiche l'image principale à gauche et si besoin une grille d'images additionnelles à droite.
 // @author       Darth Obvious
 // @match        https://ebdz.net/forum/*
@@ -84,9 +84,14 @@
     }
     .tooltip-additional-grid-image {
         width: ${GRID_THUMBNAIL_SIZE}px;
-        height: ${GRID_THUMBNAIL_HEIGHT}px; 
+        height: ${GRID_THUMBNAIL_HEIGHT}px;
         object-fit: cover;
         border: 1px solid #ddd;
+        box-sizing: border-box;
+        cursor: pointer;
+    }
+    .tooltip-additional-grid-image.tooltip-thumbnail-selected {
+        border: 2px solid dodgerblue;
     }
     #cover-tooltip-userscript .tooltip-loading,
     #cover-tooltip-userscript .tooltip-message {
@@ -118,6 +123,26 @@
     const showTooltipImmediately = (event, contentHtml) => {
         cancelHideTooltip();
         tooltipElement.innerHTML = contentHtml;
+        const mainImageDisplay = tooltipElement.querySelector('.tooltip-main-image-left');
+        const thumbnails = tooltipElement.querySelectorAll('.tooltip-additional-grid-image');
+
+        if (mainImageDisplay && thumbnails.length > 0) {
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', (clickEvent) => {
+                    clickEvent.preventDefault();
+
+                    const newSrc = thumbnail.src;
+                    const newAlt = thumbnail.alt.replace('Miniature', 'Image'); // Ajuste l'alt text
+
+                    mainImageDisplay.src = newSrc;
+                    mainImageDisplay.alt = newAlt;
+
+                    // Optionnel : Mettre en évidence la miniature sélectionnée
+                    thumbnails.forEach(t => t.classList.remove('tooltip-thumbnail-selected'));
+                    thumbnail.classList.add('tooltip-thumbnail-selected');
+                });
+            });
+        }
         if (event) {
             positionTooltip(event);
         }
@@ -157,8 +182,8 @@
             const mainImageUrl = imageData[0];
             let additionalImagesHtml = '';
             if (imageData.length > 1) {
-                for (let i = 1; i < imageData.length; i++) {
-                    additionalImagesHtml += `<img src="${imageData[i]}" alt="Image ${i + 1}" class="tooltip-additional-grid-image">`;
+                for (let i = 0; i < imageData.length; i++) {
+                    additionalImagesHtml += `<img src="${imageData[i]}" alt="Miniature ${i + 1}" class="tooltip-additional-grid-image">`;
                 }
             }
             htmlContent = `
