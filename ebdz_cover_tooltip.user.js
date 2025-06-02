@@ -28,6 +28,7 @@
     const IMAGE_CLASS_BLACKLIST = ['smilie', 'emoji', 'avatar']; // Classes d'images à ignorer
     const URL_REGEX_BLACKLIST = [
         'emule\\.png$',
+        'emule64\\.png$',
         '/icones/',
     ]; // Regex pour les URLs d'images à ignorer
 
